@@ -18,17 +18,13 @@ const users = require("./json/users.json");
  * @return {Promise<{}>} A promise to the user.
  */
 const getUserWithEmail = function (email) {
-  return new Promise((resolve) => {
-    for (const userId in users) {
-      const user = users[userId];
-      if (user && user.email.toLowerCase() === email.toLowerCase()) {
-        resolve(user);
-        return;
-      }
-    }
-    resolve(null); 
-  });
+  const query = `SELECT * FROM users WHERE email = $1`;
+  return pool
+    .query(query, [email.toLowerCase()])
+    .then(res => res.rows[0])
+    .catch(err => console.error('Query error', err.stack));
 };
+
 
 /**
  * Get a single user from the database given their id.
@@ -73,7 +69,7 @@ const getAllReservations = function (guest_id, limit = 10) {
  */
 
 const getAllProperties = (options, limit = 10) => {
-  return pool
+ return pool
     .query(`SELECT * FROM properties LIMIT $1`, [limit])
     .then((result) => {
       console.log(result.rows);
