@@ -17,7 +17,7 @@ const users = require("./json/users.json");
  * @param {String} email The email of the user.
  * @return {Promise<{}>} A promise to the user.
  */
-const getUserWithEmail = function (email) {
+const getUserWithEmail = function(email) {
   const query = `SELECT * FROM users WHERE email = $1`;
   return pool
     .query(query, [email.toLowerCase()])
@@ -31,7 +31,7 @@ const getUserWithEmail = function (email) {
  * @param {string} id The id of the user.
  * @return {Promise<{}>} A promise to the user.
  */
-const getUserWithId = function (id) {
+const getUserWithId = function(id) {
   const query = `SELECT * FROM users WHERE id = $1`;
   return pool
     .query(query, [id])
@@ -56,14 +56,14 @@ const addUser = function(user) {
   const query = `
     INSERT INTO users (name, email, password)
     VALUES ($1, $2, $3)
-    RETURNING *;`
+    RETURNING *;`;
 
-    const values = [user.name, user.email, user.password];
+  const values = [user.name, user.email, user.password];
 
-    return pool
-      .query(query, values)
-      .then(res => res.rows[0])
-      .catch(err => console.error('Querry error', err.stack))
+  return pool
+    .query(query, values)
+    .then(res => res.rows[0])
+    .catch(err => console.error('Querry error', err.stack));
 };
 
 /// Reservations
@@ -73,7 +73,7 @@ const addUser = function(user) {
  * @param {number} [limit=10] The maximum number of reservations to return.
  * @return {Promise<Array>} A promise that will resolve to an array of reservation objects.
  */
-const getAllReservations = function (guest_id, limit = 10) {
+const getAllReservations = function(guestId, limit = 10) {
   const query = `
     SELECT reservations.*, properties.*, AVG(property_reviews.rating) as average_rating
     FROM reservations
@@ -85,7 +85,7 @@ const getAllReservations = function (guest_id, limit = 10) {
     LIMIT $2;
   `;
   return pool
-    .query(query, [guest_id, limit])
+    .query(query, [guestId, limit])
     .then(res => res.rows)
     .catch(err => console.error('Query error', err.stack));
 };
@@ -93,7 +93,7 @@ const getAllReservations = function (guest_id, limit = 10) {
 
 /// Properties
 
-const getAllProperties = function (options, limit = 10) {
+const getAllProperties = function(options, limit = 10) {
   const queryParams = [];
   let queryString = `
     SELECT properties.*, AVG(property_reviews.rating) as average_rating
@@ -161,7 +161,7 @@ const getAllProperties = function (options, limit = 10) {
  * @param {{}} property An object containing all of the property details.
  * @return {Promise<{}>} A promise to the property.
  */
-const addProperty = function (property) {
+const addProperty = function(property) {
   const propertyId = Object.keys(properties).length + 1;
   property.id = propertyId;
   properties[propertyId] = property;
