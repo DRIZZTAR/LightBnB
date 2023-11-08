@@ -7,9 +7,6 @@ const pool = new Pool({
   database: 'lightbnb'
 });
 
-const properties = require("./json/properties.json");
-const users = require("./json/users.json");
-
 /**
  * Get a single user from the database given their email.
  * @param {String} email The email of the user.
@@ -22,7 +19,6 @@ const getUserWithEmail = function(email) {
     .then(res => res.rows[0])
     .catch(err => console.error('Query error', err.stack));
 };
-
 
 /**
  * Get a single user from the database given their id.
@@ -39,8 +35,8 @@ const getUserWithId = function(id) {
 
 /**
  * Add a new user to the database.
- * @param {{name: string, password: string, email: string}} user
- * @return {Promise<{}>} A promise to the user.
+ * @param {Object} user An object representing the user to be added, with the following properties:
+ * @return {Promise<Object>} A promise that resolves to the newly created user object.
  */
 
 const addUser = function(user) {
@@ -56,8 +52,6 @@ const addUser = function(user) {
     .then(res => res.rows[0])
     .catch(err => console.error('Query error', err.stack));
 };
-
-/// Reservations
 
 /**
  * @param {string} guestId The id of the user for whom to retrieve reservations.
@@ -81,7 +75,12 @@ const getAllReservations = function(guestId, limit = 10) {
     .catch(err => console.error('Query error', err.stack));
 };
 
-/// Properties
+/**
+ * Retrieves properties from the database based on the provided search criteria.
+ * @param {Object} options An object containing query options
+ * @param {number} [limit=10] The maximum number of property records to return.
+ * @return {Promise<Array>} A promise that resolves to an array of property objects that match the criteria.
+ */
 
 const getAllProperties = function(options, limit = 10) {
   const queryParams = [];
@@ -148,7 +147,7 @@ const getAllProperties = function(options, limit = 10) {
 /**
  * Add a property to the database
  * @param {{}} property An object containing all of the property details.
- * @return {Promise<{}>} A promise to the property.
+ * @return {Promise<Object>} A promise that resolves with the newly created property object.
  */
 const addProperty = function(property) {
   const queryParams = [
